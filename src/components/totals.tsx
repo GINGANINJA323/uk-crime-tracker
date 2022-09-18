@@ -15,16 +15,18 @@ const TableHead = styled.td`
 `
 
 const TotalsContainer = styled.div`
+  margin: 10px;
+  padding: 10px;
+  width: 100%;
   display: flex;
-  padding: 10px 20%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 `;
 
 const TotalsTable = styled.table`
-  margin: 0 20%;
   border-collapse: collapse;
+  width: 98%;
 `;
 
 const TableRow = styled.tr<TableRowProps>`
