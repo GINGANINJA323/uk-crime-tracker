@@ -82,6 +82,12 @@ const App = (): JSX.Element => {
     setCrimes(data);
   }
 
+  const searchOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      getCrimesForLocation();
+    }
+  }
+
   return (
     <Main>
       <Header>
@@ -90,7 +96,7 @@ const App = (): JSX.Element => {
         <p>{'Crime data courtesy of '}<Link url={'https://data.police.uk/'}>{'UK Police'}</Link>{' and geolocation courtesy of '}<Link url={'https://nominatim.org/release-docs/latest/'}>{'Nominatim and OSM'}</Link>{'.'}</p>
         <p>{'Please Note: Scottish crime data is provided only by the British Transport Police (BTP) and may not be representative of actual crime levels.'}</p>
         <ControlsContainer>
-          <Input value={location} placeholder='Enter your location' onChange={(e) => setLocation(e.target.value)}></Input>
+          <Input onKeyPress={(e) => searchOnEnter(e)} value={location} placeholder='Enter your location' onChange={(e) => setLocation(e.target.value)}></Input>
           <Button onClick={getCrimesForLocation}>{'Search'}</Button>
         </ControlsContainer>
       </Header>
