@@ -1,9 +1,9 @@
 # UK Crime Tracker Web App
 
 Client-side web app that can be queried to provide information on crimes within a given area.
-Data courtesy of the UK crime API and Nominatim.
+Data courtesy of the [UK crime API](https://data.police.uk/) and [Nominatim](https://nominatim.org/release-docs/latest/).
 
-## Dependancies
+## Dependencies
 
 Node 16.
 
