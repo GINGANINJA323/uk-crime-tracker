@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import TotalsDisplay from './totals';
+import TotalsDisplay from './components/totals';
 import { crimeCategoryMap, crimeOutcomesMap } from './utils';
 
 import type { Crime, GeoLocation, Totals } from './types';
@@ -8,7 +8,7 @@ import type { Crime, GeoLocation, Totals } from './types';
 const Main = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
 `;
 
 const App = (): JSX.Element => {
