@@ -1,14 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
-import TotalsDisplay from './components/totals';
-import { crimeCategoryMap, crimeOutcomesMap } from './utils';
+import CrimesDisplay from './components/crimes-display';
+import { crimeCategoryMap } from './utils';
+import { Button, Error, Input } from './components/elements';
 
 import type { Crime, GeoLocation, Totals } from './types';
 
 const Main = styled.div`
+  color: #FFF;
+  background: #202020;
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+const Header = styled.div`
+  row-gap: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  padding: 10px 20%;
+  background: #3a3a3a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ControlsContainer = styled.div`
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
 `;
 
 const App = (): JSX.Element => {
@@ -63,30 +83,21 @@ const App = (): JSX.Element => {
 
   return (
     <Main>
-      <h1>{'UK Police Crime Tracker'}</h1>
-      <p>{'This tool can be used to see recent and historic crimes near to you, from the UK\'s Crime API.'}</p>
-      <input value={location} placeholder='Enter your location' onChange={(e) => setLocation(e.target.value)}></input>
-      <button onClick={getCrimesForLocation}>{'Search'}</button>
+      <Header>
+        <h1>{'UK Police Crime Tracker'}</h1>
+        <p>{'This tool can be used to see recent and historic crimes near to you, from the UK\'s Police Crime API.'}</p>
+        <ControlsContainer>
+          <Input value={location} placeholder='Enter your location' onChange={(e) => setLocation(e.target.value)}></Input>
+          <Button onClick={getCrimesForLocation}>{'Search'}</Button>
+        </ControlsContainer>
+      </Header>
       {
-        crimes && crimes.length && totals ?
-        <>
-          <h2>{`Crimes for ${geoLoc?.display_name || 'location'}:`}</h2>
-          <TotalsDisplay totals={totals} />
-          {
-            crimes.map(c => (
-              <>
-                <h3>{`Crime: ${crimeCategoryMap[c.category]}`}</h3>
-                <h3>{`Outcome: ${c.outcome_status?.category ? crimeOutcomesMap[c.outcome_status?.category] : 'Unknown'}`}</h3>
-                <p>{`Location: ${c.location.street.name}`}</p>
-                <p>{`Date (YYYY-MM): ${c.month}`}</p>
-              </>
-            ))
-          }
-        </> : null
+        crimes && crimes.length && totals && geoLoc ?
+          <CrimesDisplay geoLoc={geoLoc} totals={totals} crimes={crimes} /> : null
       }
       {
         error ?
-          <h2>{error}</h2> : null
+          <Error>{error}</Error> : null
       }
     </Main>
   );
