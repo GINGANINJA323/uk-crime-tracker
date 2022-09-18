@@ -19,7 +19,8 @@ const Header = styled.div`
   row-gap: 10px;
   margin-top: 10px;
   border-radius: 10px;
-  padding: 10px 20%;
+  padding: 15px 0;
+  width: 75%;
   background: #3a3a3a;
   display: flex;
   flex-direction: column;
