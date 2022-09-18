@@ -6,6 +6,10 @@ export const Button = styled.button`
   border: none;
   border-radius: 5px;
   padding: 10px;
+  :hover {
+    cursor: pointer;
+    color: #B5B5B5;
+  }
 `;
 
 export const Input = styled.input`

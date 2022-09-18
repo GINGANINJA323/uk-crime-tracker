@@ -16,7 +16,9 @@ const TableHead = styled.td`
 
 const TotalsContainer = styled.div`
   display: flex;
+  padding: 10px 20%;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
 `;
 
@@ -26,7 +28,7 @@ const TotalsTable = styled.table`
 `;
 
 const TableRow = styled.tr<TableRowProps>`
-  background: ${props => props.index % 2 === 0 ? '#d7d7d7' : '#eaeaea'};
+  background: ${props => props.index % 2 === 0 ? '#3a3a3a' : '#535353'};
 `;
 
 const TotalsDisplay = (props: TotalsProps): JSX.Element => {
