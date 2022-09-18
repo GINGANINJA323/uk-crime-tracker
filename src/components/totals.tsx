@@ -12,7 +12,7 @@ interface TableRowProps {
 
 const TableHead = styled.td`
   font-weight: bold;
-`
+`;
 
 const TotalsContainer = styled.div`
   margin: 10px;
