@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import TotalsDisplay from './totals';
+import { crimeCategoryMap, crimeOutcomesMap } from './utils';
 
-import type { Crime } from './types';
+import type { Crime, GeoLocation, Totals } from './types';
 
 const Main = styled.div`
   display: flex;
@@ -11,25 +13,17 @@ const Main = styled.div`
 
 const App = (): JSX.Element => {
   const [location, setLocation] = React.useState<string>('');
+  const [geoLoc, setGeoLoc] = React.useState<GeoLocation>();
   const [crimes, setCrimes] = React.useState<Crime[]>();
   const [error, setError] = React.useState<string>();
+  const [totals, setTotals] = React.useState<Totals>();
 
-  const crimeCategoryMap: { [key: string]: string } = {
-    'drugs': 'Drug Related',
-    'other-theft': 'Theft',
-    'bicycle-theft': 'Bicycle Theft',
-    'criminal-damage-arson': 'Arson',
-    'burglary': 'Burglary',
-    'anti-social-behaviour': 'Anti-social Behaviour',
-    'possession-of-weapons': 'Weapon Possession',
-    'public-order': 'Public Order',
-    'robbery': 'Robbery',
-    'shoplifting': 'Shoplifting',
-    'theft-from-the-person': 'Personal Theft/Mugging',
-    'vehicle-crime': 'Vehicle Crime',
-    'violent-crime': 'Violent Crime',
-    'other-crime': 'Other'
-  };
+  const getCrimeTotals = (crimes: Crime[]): void => {
+    const initialMap: Totals = Object.keys(crimeCategoryMap).reduce((acc, curr) => ({ ...acc, [curr]: 0 }), {}); // format
+    crimes.forEach((c) => initialMap[c.category] = initialMap[c.category]+=1);
+    initialMap['total'] = crimes.length;
+    setTotals(initialMap);
+  }
 
   const getCrimesForLocation = async(): Promise<void> => {
     // first, geocode user query to coord
@@ -42,11 +36,18 @@ const App = (): JSX.Element => {
     }
 
     const geoData = await geoResponse.json();
-    const geoLoc = geoData[0];
-
+    const geoLocation = geoData[0];
+    
+    if (!geoLocation) {
+      console.log(`search term ${location} returned no results`);
+      setError('Search term returned no results. Make sure you\'ve entered a valid location.');
+      return;
+    }
+    
+    setGeoLoc(geoLocation);
     // get the crimes for the entered location
 
-    const response = await fetch(`https://data.police.uk/api/crimes-street/all-crime?lat=${geoLoc.lat}&lng=${geoLoc.lon}`);
+    const response = await fetch(`https://data.police.uk/api/crimes-street/all-crime?lat=${geoLocation.lat}&lng=${geoLocation.lon}`);
 
     if (!response.ok) {
       console.log('Request failed');
@@ -55,10 +56,10 @@ const App = (): JSX.Element => {
     }
 
     const data = await response.json();
+    getCrimeTotals(data);
+    setError('');
     setCrimes(data);
   }
-
-  console.log('Crimes: ', crimes);
 
   return (
     <Main>
@@ -67,20 +68,25 @@ const App = (): JSX.Element => {
       <input value={location} placeholder='Enter your location' onChange={(e) => setLocation(e.target.value)}></input>
       <button onClick={getCrimesForLocation}>{'Search'}</button>
       {
-        crimes && crimes.length ?
+        crimes && crimes.length && totals ?
         <>
-          <h2>{'Crimes in your area:'}</h2>
+          <h2>{`Crimes for ${geoLoc?.display_name || 'location'}:`}</h2>
+          <TotalsDisplay totals={totals} />
           {
             crimes.map(c => (
               <>
                 <h3>{`Crime: ${crimeCategoryMap[c.category]}`}</h3>
+                <h3>{`Outcome: ${c.outcome_status?.category ? crimeOutcomesMap[c.outcome_status?.category] : 'Unknown'}`}</h3>
                 <p>{`Location: ${c.location.street.name}`}</p>
                 <p>{`Date (YYYY-MM): ${c.month}`}</p>
               </>
             ))
           }
-        </> :
-        null
+        </> : null
+      }
+      {
+        error ?
+          <h2>{error}</h2> : null
       }
     </Main>
   );
